@@ -14,26 +14,8 @@ type PillarWeights struct {
 	Deployability float64
 }
 
-// Default returns the default configuration values.
+// Default returns the default configuration values (balanced preset).
 func Default() Configuration {
-	return Configuration{
-		Threshold: 6.0,
-		ExcludePatterns: []string{
-			"*.lock",
-			"*.min.*",
-			"*.map",
-			"*.pb.go",
-			"*_gen.go",
-			"*_mock.go",
-			"vendor/*",
-			"node_modules/*",
-			".git/*",
-			"__pycache__/*",
-		},
-		PillarWeights: PillarWeights{
-			CodeQuality:   0.4,
-			TestCoverage:  0.35,
-			Deployability: 0.25,
-		},
-	}
+	preset, _ := GetPreset("balanced")
+	return preset.Config
 }
