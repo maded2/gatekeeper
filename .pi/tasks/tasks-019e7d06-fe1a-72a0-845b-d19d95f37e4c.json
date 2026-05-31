@@ -84,7 +84,7 @@
       "id": "6",
       "subject": "Epic 6: Feedback & Reporting",
       "description": "Stories 6.1-6.3: Actionable feedback, positive feedback, evidence",
-      "status": "pending",
+      "status": "completed",
       "metadata": {},
       "blocks": [],
       "blockedBy": [
@@ -92,7 +92,7 @@
         "5"
       ],
       "createdAt": 1780214208583,
-      "updatedAt": 1780214226682
+      "updatedAt": 1780234639060
     },
     {
       "id": "7",
@@ -149,15 +149,15 @@
     {
       "id": "11",
       "subject": "Epic 11: Edge Cases & Error Handling",
-      "description": "Stories 11.1-11.3: Empty/minimal diffs, merge conflicts, borderline scores",
-      "status": "pending",
+      "description": "Stories 11.1-11.3: Empty/minimal diffs, merge conflicts, borderline scores. Story 11.3 done. Stories 11.1-11.2 remaining.",
+      "status": "in_progress",
       "metadata": {},
       "blocks": [],
       "blockedBy": [
         "3"
       ],
       "createdAt": 1780214208587,
-      "updatedAt": 1780214226685
+      "updatedAt": 1780234639062
     }
   ]
 }
