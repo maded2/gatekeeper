@@ -124,14 +124,14 @@
       "id": "9",
       "subject": "Epic 9: Security & Credentials",
       "description": "Stories 9.1-9.3: Credential handling, sensitive data filtering, self-hosted models",
-      "status": "pending",
+      "status": "completed",
       "metadata": {},
       "blocks": [],
       "blockedBy": [
         "2"
       ],
       "createdAt": 1780214208585,
-      "updatedAt": 1780214226684
+      "updatedAt": 1780238446959
     },
     {
       "id": "10",
