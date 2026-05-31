@@ -5,20 +5,20 @@
       "id": "1",
       "subject": "Epic 1: Project Foundation & Configuration",
       "description": "Stories 1.1-1.3: Configuration file, validation, and presets",
-      "status": "in_progress",
+      "status": "completed",
       "metadata": {},
       "blocks": [
         "2"
       ],
       "blockedBy": [],
       "createdAt": 1780214208578,
-      "updatedAt": 1780214226686
+      "updatedAt": 1780216211237
     },
     {
       "id": "2",
       "subject": "Epic 2: Core Diff Evaluation",
-      "description": "Stories 2.1-2.9: Diff inputs, filtering, quality/coverage/deployability evaluation",
-      "status": "pending",
+      "description": "Stories 2.1-2.9: Diff inputs (working dir, staged, base ref, file), filtering, quality/coverage/deployability evaluation, large diff handling\nStatus: Stories 2.1-2.5 complete (24 tests passing). Stories 2.6-2.9 in progress (evaluator tests have 2 failing tests to fix: deep nesting detection and coverage no-data warning)",
+      "status": "in_progress",
       "metadata": {},
       "blocks": [
         "3",
@@ -30,7 +30,7 @@
         "1"
       ],
       "createdAt": 1780214208580,
-      "updatedAt": 1780214226684
+      "updatedAt": 1780231429889
     },
     {
       "id": "3",

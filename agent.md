@@ -109,3 +109,13 @@ The full problem specification is in [`problem-analysis.md`](problem-analysis.md
 - Local mode never blocks; it warns. CI mode can hard-reject.
 - Keep evaluation scoped to diffs, never full codebases
 - Consider cost implications — developers may run 3–5 local checks per PR
+
+## Git Commit Policy
+
+- **After completing each user story:** Stage all changes (`git add -A`) and commit with a conventional commit message referencing the story number (e.g., `feat(config): Story 1.1 - Repository Configuration File`)
+- **After completing each epic:** Create a summary commit that lists all stories completed in the epic
+- Commit messages should include:
+  - Feature type prefix (`feat:`, `fix:`, `test:`, `refactor:`)
+  - Story number and title
+  - Brief description of what was implemented
+- **Never skip commits** — every story completion must be committed before moving to the next
