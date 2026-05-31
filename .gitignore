@@ -1,0 +1,27 @@
+# Binaries
+gatekeeper
+gatekeeper.exe
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+*.out
+coverage/
+
+# Gatekeeper data
+.gatekeeper/data/
+
+# Environment
+.env
+.env.local
