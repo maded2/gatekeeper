@@ -57,7 +57,7 @@
       "id": "4",
       "subject": "Story B-4: Skip Analysis for Trivial Changes",
       "description": "Changes affecting only .md, .txt, or non-code files trigger immediate pass. Whitespace-only changes also pass. Skip message is clear. Does not apply to full workspace check.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story B-4",
       "metadata": {},
       "blocks": [],
@@ -65,7 +65,7 @@
         "1"
       ],
       "createdAt": 1781274423435,
-      "updatedAt": 1781275353363
+      "updatedAt": 1781275716232
     },
     {
       "id": "5",
@@ -113,7 +113,7 @@
       "id": "8",
       "subject": "Story D-1: Deterministic Pass/Fail Exit Codes",
       "description": "Exit code 0 = pass, 1 = runtime error, 2 = fail. Consistent and deterministic. Exit code returned after all output flushed.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story D-1",
       "metadata": {},
       "blocks": [
@@ -123,7 +123,7 @@
         "1"
       ],
       "createdAt": 1781274423437,
-      "updatedAt": 1781274460466
+      "updatedAt": 1781275722369
     },
     {
       "id": "9",
