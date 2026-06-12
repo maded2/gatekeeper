@@ -1,13 +1,29 @@
 package evaluator
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"gatekeeper/internal/config"
 	"gatekeeper/internal/scanner"
 	"gatekeeper/pkg/score"
 )
+
+// secretPatterns matches common hardcoded secret patterns.
+var secretPatterns = []*regexp.Regexp{
+	regexp.MustCompile(`(?i)(api[_-]?key|apikey)\s*[=:]\s*["'][^"']{8,}["']`),
+	regexp.MustCompile(`(?i)(secret|password|passwd|pwd)\s*[=:]\s*["'][^"']{4,}["']`),
+	regexp.MustCompile(`(?i)sk-[a-zA-Z0-9]{10,}`),
+}
+
+// poorNames matches single-letter or meaningless variable names.
+var poorNames = regexp.MustCompile(`\b[a]\b`)
+
+// maxNestingDepth is the threshold for cognitive complexity warnings.
+const maxNestingDepth = 3
 
 // sourceExtensions maps file extensions to source language identifiers.
 var sourceExtensions = map[string]bool{
@@ -74,10 +90,107 @@ func isSourceFile(path string) bool {
 // analyzeFile performs basic static analysis on a single file.
 func analyzeFile(absPath, relPath string) []score.Finding {
 	var findings []score.Finding
-	// TODO: integrate AST analysis, linter output, etc.
-	// For now, return empty findings (the file was analyzed, just no issues found)
-	_ = absPath
-	_ = relPath
+
+	content, err := os.ReadFile(absPath)
+	if err != nil {
+		return findings
+	}
+
+	lines := strings.Split(string(content), "\n")
+
+	// Check for hardcoded secrets
+	findings = append(findings, checkSecrets(relPath, lines)...)
+
+	// Check for cognitive complexity (nesting depth)
+	findings = append(findings, checkNestingDepth(relPath, lines)...)
+
+	return findings
+}
+
+// checkSecrets scans file lines for hardcoded secret patterns.
+func checkSecrets(relPath string, lines []string) []score.Finding {
+	var findings []score.Finding
+	for i, line := range lines {
+		for _, re := range secretPatterns {
+			if re.MatchString(line) {
+				findings = append(findings, score.Finding{
+					Priority:    "HIGH",
+					Pillar:      score.PillarSecurity,
+					Location:    relPath,
+					LineStart:   i + 1,
+					LineEnd:     i + 1,
+					Description: "Potential hardcoded secret detected",
+					Remediation: "Move this secret to an environment variable or a secure secrets manager",
+					Severity:    string(SeverityHigh),
+				})
+				break
+			}
+		}
+	}
+	return findings
+}
+
+// checkNestingDepth detects functions with nesting deeper than maxNestingDepth.
+func checkNestingDepth(relPath string, lines []string) []score.Finding {
+	var findings []score.Finding
+	var funcStart, maxDepth, depth int
+	inFunc := false
+
+	for i, line := range lines {
+		trimmed := strings.TrimSpace(line)
+
+		// Detect function start (simple heuristic)
+		if strings.HasPrefix(trimmed, "func ") || strings.HasPrefix(trimmed, "def ") {
+			if inFunc && maxDepth > maxNestingDepth {
+				findings = append(findings, score.Finding{
+					Priority:    "MEDIUM",
+					Pillar:      score.PillarArchitecture,
+					Location:    relPath,
+					LineStart:   funcStart + 1,
+					LineEnd:     i,
+					Description: fmt.Sprintf("Function has nesting depth of %d (max recommended: %d)", maxDepth, maxNestingDepth),
+					Remediation: "Extract nested logic into separate helper functions to reduce complexity",
+				})
+			}
+			inFunc = true
+			funcStart = i
+			maxDepth = 0
+			depth = 0
+			continue
+		}
+
+		if !inFunc {
+			continue
+		}
+
+		// Track nesting via braces/indentation
+		for _, ch := range trimmed {
+			if ch == '{' {
+				depth++
+				if depth > maxDepth {
+					maxDepth = depth
+				}
+			} else if ch == '}' {
+				if depth > 0 {
+					depth--
+				}
+			}
+		}
+	}
+
+	// Handle last function
+	if inFunc && maxDepth > maxNestingDepth {
+		findings = append(findings, score.Finding{
+			Priority:    "MEDIUM",
+			Pillar:      score.PillarArchitecture,
+			Location:    relPath,
+			LineStart:   funcStart + 1,
+			LineEnd:     len(lines),
+			Description: fmt.Sprintf("Function has nesting depth of %d (max recommended: %d)", maxDepth, maxNestingDepth),
+			Remediation: "Extract nested logic into separate helper functions to reduce complexity",
+		})
+	}
+
 	return findings
 }
 

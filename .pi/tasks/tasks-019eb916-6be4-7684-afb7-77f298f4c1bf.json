@@ -26,7 +26,7 @@
       "id": "2",
       "subject": "Story B-2: See Readable Findings in Terminal",
       "description": "Implement TerminalReporter with lipgloss-formatted, color-coded table output. High-priority findings in red, ordered by priority. Support --format=pretty and --format=json flags.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story B-2",
       "metadata": {},
       "blocks": [
@@ -37,13 +37,13 @@
         "1"
       ],
       "createdAt": 1781274423433,
-      "updatedAt": 1781274789888
+      "updatedAt": 1781275031746
     },
     {
       "id": "3",
       "subject": "Story B-3: Receive Actionable Remediation Suggestions",
       "description": "Every finding includes a remediation suggestion in plain language, referencing specific code location. Remediations are prioritized by impact.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story B-3",
       "metadata": {},
       "blocks": [],
@@ -51,7 +51,7 @@
         "1"
       ],
       "createdAt": 1781274423434,
-      "updatedAt": 1781274460460
+      "updatedAt": 1781275038192
     },
     {
       "id": "4",
