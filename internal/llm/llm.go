@@ -32,3 +32,13 @@ func FromConfig(cfg config.GatekeeperConfig) (*Config, error) {
 func IsConfigured(cfg config.GatekeeperConfig) bool {
 	return cfg.Gatekeeper.LLM != nil && cfg.Gatekeeper.LLM.BaseURL != ""
 }
+
+// MaxRetries returns the maximum number of retry attempts for LLM requests.
+func MaxRetries() int {
+	return 2
+}
+
+// RuleBasedPillars returns the set of pillars that can be computed without LLM.
+func RuleBasedPillars() []string {
+	return []string{"static", "architecture", "verification", "security"}
+}

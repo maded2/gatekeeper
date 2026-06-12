@@ -193,7 +193,7 @@
       "id": "14",
       "subject": "Story E-3: Configure Custom LLM Provider for On-Premise",
       "description": "Configure custom base URL, API key env var, timeout, model name, and temperature=0. Works with any OpenAI-compatible endpoint.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story E-3",
       "metadata": {},
       "blocks": [
@@ -206,13 +206,13 @@
         "1"
       ],
       "createdAt": 1781274423441,
-      "updatedAt": 1781277935760
+      "updatedAt": 1781278534407
     },
     {
       "id": "15",
       "subject": "Story F-1: Prevent Secrets from Leaving Network",
       "description": "Scan code for secret patterns (API keys, passwords, tokens). Replace with [REDACTED] before transmission. Configurable toggle. Warning when secrets detected.",
-      "status": "pending",
+      "status": "completed",
       "activeForm": "Implementing Story F-1",
       "metadata": {},
       "blocks": [],
@@ -220,13 +220,13 @@
         "14"
       ],
       "createdAt": 1781274423442,
-      "updatedAt": 1781274460468
+      "updatedAt": 1781278534409
     },
     {
       "id": "16",
       "subject": "Story F-2: Disable Cloud Transmission Entirely",
       "description": "Config flag prohibits all public cloud transmission. Falls back to rule-based evaluation only. Clear message when LLM is unavailable.",
-      "status": "pending",
+      "status": "completed",
       "activeForm": "Implementing Story F-2",
       "metadata": {},
       "blocks": [],
@@ -234,13 +234,13 @@
         "14"
       ],
       "createdAt": 1781274423443,
-      "updatedAt": 1781274460469
+      "updatedAt": 1781278534409
     },
     {
       "id": "17",
       "subject": "Story F-3: Transmit Only Changed Code",
       "description": "Only changed functions/classes sent for LLM analysis. Surrounding context limited to immediate parent scope. Unchanged files never transmitted.",
-      "status": "pending",
+      "status": "completed",
       "activeForm": "Implementing Story F-3",
       "metadata": {},
       "blocks": [],
@@ -248,7 +248,7 @@
         "14"
       ],
       "createdAt": 1781274423443,
-      "updatedAt": 1781274460470
+      "updatedAt": 1781278534410
     },
     {
       "id": "18",
@@ -268,7 +268,7 @@
       "id": "19",
       "subject": "Story G-2: Handle LLM Failures Gracefully",
       "description": "Retry up to 2 times on LLM failure. Fall back to rule-based scoring. Output indicates LLM unavailable. Valid exit code in fallback mode.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story G-2",
       "metadata": {},
       "blocks": [],
@@ -276,7 +276,7 @@
         "14"
       ],
       "createdAt": 1781274423445,
-      "updatedAt": 1781274460470
+      "updatedAt": 1781278534411
     },
     {
       "id": "20",
