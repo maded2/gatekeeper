@@ -71,7 +71,7 @@
       "id": "5",
       "subject": "Story C-1: Check Quality of Changes Between Two Branches",
       "description": "Implement `gatekeeper diff --base=main --target=feature` using go-git. Only changed files/lines are analyzed. Output shows per-pillar impact of changes.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story C-1",
       "metadata": {},
       "blocks": [],
@@ -79,13 +79,13 @@
         "1"
       ],
       "createdAt": 1781274423435,
-      "updatedAt": 1781276457441
+      "updatedAt": 1781277093330
     },
     {
       "id": "6",
       "subject": "Story C-2: Check Quality of Specific Commit Range",
       "description": "Implement `gatekeeper commit-range --range=HEAD~3..HEAD`. Only changes in specified commits are analyzed. Findings are attributable to specific commits.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story C-2",
       "metadata": {},
       "blocks": [],
@@ -93,13 +93,13 @@
         "1"
       ],
       "createdAt": 1781274423436,
-      "updatedAt": 1781274460463
+      "updatedAt": 1781277093332
     },
     {
       "id": "7",
       "subject": "Story C-3: Generate Markdown Summary for PRs",
       "description": "Implement --format=markdown output. Includes overall score, pillar breakdown, and top findings. Concise enough for a single PR comment.",
-      "status": "pending",
+      "status": "completed",
       "activeForm": "Implementing Story C-3",
       "metadata": {},
       "blocks": [],
@@ -107,7 +107,7 @@
         "2"
       ],
       "createdAt": 1781274423437,
-      "updatedAt": 1781274460464
+      "updatedAt": 1781277093331
     },
     {
       "id": "8",
