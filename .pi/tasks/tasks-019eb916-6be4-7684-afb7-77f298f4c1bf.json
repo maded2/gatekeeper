@@ -169,13 +169,13 @@
       "id": "12",
       "subject": "Story E-1: Evaluate Code Readability and Intent",
       "description": "Flag variables/functions with names that obscure purpose. Each flag includes suggested improvement. Evaluation considers surrounding context.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story E-1",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423440,
-      "updatedAt": 1781274423440
+      "updatedAt": 1781278728039
     },
     {
       "id": "13",
@@ -268,7 +268,7 @@
       "id": "19",
       "subject": "Story G-2: Handle LLM Failures Gracefully",
       "description": "Retry up to 2 times on LLM failure. Fall back to rule-based scoring. Output indicates LLM unavailable. Valid exit code in fallback mode.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story G-2",
       "metadata": {},
       "blocks": [],
@@ -276,7 +276,7 @@
         "14"
       ],
       "createdAt": 1781274423445,
-      "updatedAt": 1781278534411
+      "updatedAt": 1781278728037
     },
     {
       "id": "20",
