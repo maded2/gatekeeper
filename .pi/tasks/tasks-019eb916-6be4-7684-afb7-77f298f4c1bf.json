@@ -43,7 +43,7 @@
       "id": "3",
       "subject": "Story B-3: Receive Actionable Remediation Suggestions",
       "description": "Every finding includes a remediation suggestion in plain language, referencing specific code location. Remediations are prioritized by impact.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story B-3",
       "metadata": {},
       "blocks": [],
@@ -51,13 +51,13 @@
         "1"
       ],
       "createdAt": 1781274423434,
-      "updatedAt": 1781275038192
+      "updatedAt": 1781275353361
     },
     {
       "id": "4",
       "subject": "Story B-4: Skip Analysis for Trivial Changes",
       "description": "Changes affecting only .md, .txt, or non-code files trigger immediate pass. Whitespace-only changes also pass. Skip message is clear. Does not apply to full workspace check.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story B-4",
       "metadata": {},
       "blocks": [],
@@ -65,7 +65,7 @@
         "1"
       ],
       "createdAt": 1781274423435,
-      "updatedAt": 1781274460461
+      "updatedAt": 1781275353363
     },
     {
       "id": "5",
