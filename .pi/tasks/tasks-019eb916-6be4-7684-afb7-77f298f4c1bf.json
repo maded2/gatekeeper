@@ -254,7 +254,7 @@
       "id": "18",
       "subject": "Story G-1: Fast Feedback on Small Changes",
       "description": "Commits with <10 files complete within 300ms. Fast path for simple changes without LLM analysis.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story G-1",
       "metadata": {},
       "blocks": [],
@@ -262,7 +262,7 @@
         "1"
       ],
       "createdAt": 1781274423444,
-      "updatedAt": 1781274460467
+      "updatedAt": 1781277770949
     },
     {
       "id": "19",
@@ -282,13 +282,13 @@
       "id": "20",
       "subject": "Story G-3: Clear Error Messages",
       "description": "Clear, actionable error messages for: missing config, invalid JSON, unreachable LLM, missing API key, unreadable path. All use exit code 1.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story G-3",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423446,
-      "updatedAt": 1781277438242
+      "updatedAt": 1781277770947
     }
   ]
 }
