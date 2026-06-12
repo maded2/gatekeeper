@@ -113,7 +113,7 @@
       "id": "8",
       "subject": "Story D-1: Deterministic Pass/Fail Exit Codes",
       "description": "Exit code 0 = pass, 1 = runtime error, 2 = fail. Consistent and deterministic. Exit code returned after all output flushed.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story D-1",
       "metadata": {},
       "blocks": [
@@ -123,13 +123,13 @@
         "1"
       ],
       "createdAt": 1781274423437,
-      "updatedAt": 1781275722369
+      "updatedAt": 1781276026976
     },
     {
       "id": "9",
       "subject": "Story D-2: Machine-Readable JSON Output",
       "description": "Implement --format=json output with overall score, per-pillar scores, all findings with locations, and timestamp.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story D-2",
       "metadata": {},
       "blocks": [],
@@ -137,7 +137,7 @@
         "2"
       ],
       "createdAt": 1781274423438,
-      "updatedAt": 1781274460465
+      "updatedAt": 1781276035812
     },
     {
       "id": "10",
