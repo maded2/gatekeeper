@@ -1,0 +1,294 @@
+{
+  "nextId": 21,
+  "tasks": [
+    {
+      "id": "1",
+      "subject": "Story B-1: Check Quality of Entire Workspace",
+      "description": "Implement `gatekeeper check` command that evaluates all source files in the current directory. Output shows overall Quality Score out of 100, pillar breakdown, and specific findings with file names and line numbers.",
+      "status": "in_progress",
+      "activeForm": "Implementing Story B-1",
+      "metadata": {},
+      "blocks": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "8",
+        "18",
+        "14"
+      ],
+      "blockedBy": [],
+      "createdAt": 1781274423431,
+      "updatedAt": 1781274468788
+    },
+    {
+      "id": "2",
+      "subject": "Story B-2: See Readable Findings in Terminal",
+      "description": "Implement TerminalReporter with lipgloss-formatted, color-coded table output. High-priority findings in red, ordered by priority. Support --format=pretty and --format=json flags.",
+      "status": "pending",
+      "activeForm": "Implementing Story B-2",
+      "metadata": {},
+      "blocks": [
+        "7",
+        "9"
+      ],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423433,
+      "updatedAt": 1781274460465
+    },
+    {
+      "id": "3",
+      "subject": "Story B-3: Receive Actionable Remediation Suggestions",
+      "description": "Every finding includes a remediation suggestion in plain language, referencing specific code location. Remediations are prioritized by impact.",
+      "status": "pending",
+      "activeForm": "Implementing Story B-3",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423434,
+      "updatedAt": 1781274460460
+    },
+    {
+      "id": "4",
+      "subject": "Story B-4: Skip Analysis for Trivial Changes",
+      "description": "Changes affecting only .md, .txt, or non-code files trigger immediate pass. Whitespace-only changes also pass. Skip message is clear. Does not apply to full workspace check.",
+      "status": "pending",
+      "activeForm": "Implementing Story B-4",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423435,
+      "updatedAt": 1781274460461
+    },
+    {
+      "id": "5",
+      "subject": "Story C-1: Check Quality of Changes Between Two Branches",
+      "description": "Implement `gatekeeper diff --base=main --target=feature` using go-git. Only changed files/lines are analyzed. Output shows per-pillar impact of changes.",
+      "status": "pending",
+      "activeForm": "Implementing Story C-1",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423435,
+      "updatedAt": 1781274460462
+    },
+    {
+      "id": "6",
+      "subject": "Story C-2: Check Quality of Specific Commit Range",
+      "description": "Implement `gatekeeper commit-range --range=HEAD~3..HEAD`. Only changes in specified commits are analyzed. Findings are attributable to specific commits.",
+      "status": "pending",
+      "activeForm": "Implementing Story C-2",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423436,
+      "updatedAt": 1781274460463
+    },
+    {
+      "id": "7",
+      "subject": "Story C-3: Generate Markdown Summary for PRs",
+      "description": "Implement --format=markdown output. Includes overall score, pillar breakdown, and top findings. Concise enough for a single PR comment.",
+      "status": "pending",
+      "activeForm": "Implementing Story C-3",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "2"
+      ],
+      "createdAt": 1781274423437,
+      "updatedAt": 1781274460464
+    },
+    {
+      "id": "8",
+      "subject": "Story D-1: Deterministic Pass/Fail Exit Codes",
+      "description": "Exit code 0 = pass, 1 = runtime error, 2 = fail. Consistent and deterministic. Exit code returned after all output flushed.",
+      "status": "pending",
+      "activeForm": "Implementing Story D-1",
+      "metadata": {},
+      "blocks": [
+        "10"
+      ],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423437,
+      "updatedAt": 1781274460466
+    },
+    {
+      "id": "9",
+      "subject": "Story D-2: Machine-Readable JSON Output",
+      "description": "Implement --format=json output with overall score, per-pillar scores, all findings with locations, and timestamp.",
+      "status": "pending",
+      "activeForm": "Implementing Story D-2",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "2"
+      ],
+      "createdAt": 1781274423438,
+      "updatedAt": 1781274460465
+    },
+    {
+      "id": "10",
+      "subject": "Story D-3: Block Deployment on Critical Security Issues",
+      "description": "Hard-fail toggle for critical security findings. Any critical/high severity finding triggers fail regardless of score. Output identifies which finding triggered the block.",
+      "status": "pending",
+      "activeForm": "Implementing Story D-3",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "8"
+      ],
+      "createdAt": 1781274423439,
+      "updatedAt": 1781274460466
+    },
+    {
+      "id": "11",
+      "subject": "Story D-4: Enforce Mutation Testing Coverage Requirements",
+      "description": "Configure minimum mutation coverage threshold (default 80%). Below threshold → Verification pillar reduced by 20%. Output explains penalty.",
+      "status": "pending",
+      "activeForm": "Implementing Story D-4",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1781274423439,
+      "updatedAt": 1781274423439
+    },
+    {
+      "id": "12",
+      "subject": "Story E-1: Evaluate Code Readability and Intent",
+      "description": "Flag variables/functions with names that obscure purpose. Each flag includes suggested improvement. Evaluation considers surrounding context.",
+      "status": "pending",
+      "activeForm": "Implementing Story E-1",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1781274423440,
+      "updatedAt": 1781274423440
+    },
+    {
+      "id": "13",
+      "subject": "Story E-2: Detect Code Duplication and DRY Violations",
+      "description": "Identify blocks of logically identical or near-identical code across files. Show both locations and recommendation for extraction.",
+      "status": "pending",
+      "activeForm": "Implementing Story E-2",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1781274423441,
+      "updatedAt": 1781274423441
+    },
+    {
+      "id": "14",
+      "subject": "Story E-3: Configure Custom LLM Provider for On-Premise",
+      "description": "Configure custom base URL, API key env var, timeout, model name, and temperature=0. Works with any OpenAI-compatible endpoint.",
+      "status": "pending",
+      "activeForm": "Implementing Story E-3",
+      "metadata": {},
+      "blocks": [
+        "15",
+        "16",
+        "17",
+        "19"
+      ],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423441,
+      "updatedAt": 1781274460470
+    },
+    {
+      "id": "15",
+      "subject": "Story F-1: Prevent Secrets from Leaving Network",
+      "description": "Scan code for secret patterns (API keys, passwords, tokens). Replace with [REDACTED] before transmission. Configurable toggle. Warning when secrets detected.",
+      "status": "pending",
+      "activeForm": "Implementing Story F-1",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "14"
+      ],
+      "createdAt": 1781274423442,
+      "updatedAt": 1781274460468
+    },
+    {
+      "id": "16",
+      "subject": "Story F-2: Disable Cloud Transmission Entirely",
+      "description": "Config flag prohibits all public cloud transmission. Falls back to rule-based evaluation only. Clear message when LLM is unavailable.",
+      "status": "pending",
+      "activeForm": "Implementing Story F-2",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "14"
+      ],
+      "createdAt": 1781274423443,
+      "updatedAt": 1781274460469
+    },
+    {
+      "id": "17",
+      "subject": "Story F-3: Transmit Only Changed Code",
+      "description": "Only changed functions/classes sent for LLM analysis. Surrounding context limited to immediate parent scope. Unchanged files never transmitted.",
+      "status": "pending",
+      "activeForm": "Implementing Story F-3",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "14"
+      ],
+      "createdAt": 1781274423443,
+      "updatedAt": 1781274460470
+    },
+    {
+      "id": "18",
+      "subject": "Story G-1: Fast Feedback on Small Changes",
+      "description": "Commits with <10 files complete within 300ms. Fast path for simple changes without LLM analysis.",
+      "status": "pending",
+      "activeForm": "Implementing Story G-1",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "1"
+      ],
+      "createdAt": 1781274423444,
+      "updatedAt": 1781274460467
+    },
+    {
+      "id": "19",
+      "subject": "Story G-2: Handle LLM Failures Gracefully",
+      "description": "Retry up to 2 times on LLM failure. Fall back to rule-based scoring. Output indicates LLM unavailable. Valid exit code in fallback mode.",
+      "status": "pending",
+      "activeForm": "Implementing Story G-2",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [
+        "14"
+      ],
+      "createdAt": 1781274423445,
+      "updatedAt": 1781274460470
+    },
+    {
+      "id": "20",
+      "subject": "Story G-3: Clear Error Messages",
+      "description": "Clear, actionable error messages for: missing config, invalid JSON, unreachable LLM, missing API key, unreadable path. All use exit code 1.",
+      "status": "pending",
+      "activeForm": "Implementing Story G-3",
+      "metadata": {},
+      "blocks": [],
+      "blockedBy": [],
+      "createdAt": 1781274423446,
+      "updatedAt": 1781274423446
+    }
+  ]
+}
