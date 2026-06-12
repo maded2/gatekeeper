@@ -82,6 +82,11 @@ func DefaultConfig() GatekeeperConfig {
 		Gatekeeper: GatekeeperSection{
 			TargetThreshold: 75,
 		},
+		Pillars: PillarsSection{
+			Verification: VerificationPillar{
+				MutationCoverageFloor: 80,
+			},
+		},
 		Exclusions: ExclusionsSection{
 			Paths: DefaultExclusions(),
 		},

@@ -143,7 +143,7 @@
       "id": "10",
       "subject": "Story D-3: Block Deployment on Critical Security Issues",
       "description": "Hard-fail toggle for critical security findings. Any critical/high severity finding triggers fail regardless of score. Output identifies which finding triggered the block.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story D-3",
       "metadata": {},
       "blocks": [],
@@ -151,19 +151,19 @@
         "8"
       ],
       "createdAt": 1781274423439,
-      "updatedAt": 1781276118160
+      "updatedAt": 1781276182913
     },
     {
       "id": "11",
       "subject": "Story D-4: Enforce Mutation Testing Coverage Requirements",
       "description": "Configure minimum mutation coverage threshold (default 80%). Below threshold → Verification pillar reduced by 20%. Output explains penalty.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story D-4",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423439,
-      "updatedAt": 1781274423439
+      "updatedAt": 1781276182914
     },
     {
       "id": "12",
