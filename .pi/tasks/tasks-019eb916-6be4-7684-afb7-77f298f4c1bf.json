@@ -5,7 +5,7 @@
       "id": "1",
       "subject": "Story B-1: Check Quality of Entire Workspace",
       "description": "Implement `gatekeeper check` command that evaluates all source files in the current directory. Output shows overall Quality Score out of 100, pillar breakdown, and specific findings with file names and line numbers.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story B-1",
       "metadata": {},
       "blocks": [
@@ -20,13 +20,13 @@
       ],
       "blockedBy": [],
       "createdAt": 1781274423431,
-      "updatedAt": 1781274468788
+      "updatedAt": 1781274775229
     },
     {
       "id": "2",
       "subject": "Story B-2: See Readable Findings in Terminal",
       "description": "Implement TerminalReporter with lipgloss-formatted, color-coded table output. High-priority findings in red, ordered by priority. Support --format=pretty and --format=json flags.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story B-2",
       "metadata": {},
       "blocks": [
@@ -37,7 +37,7 @@
         "1"
       ],
       "createdAt": 1781274423433,
-      "updatedAt": 1781274460465
+      "updatedAt": 1781274789888
     },
     {
       "id": "3",
