@@ -193,7 +193,7 @@
       "id": "14",
       "subject": "Story E-3: Configure Custom LLM Provider for On-Premise",
       "description": "Configure custom base URL, API key env var, timeout, model name, and temperature=0. Works with any OpenAI-compatible endpoint.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story E-3",
       "metadata": {},
       "blocks": [
@@ -206,7 +206,7 @@
         "1"
       ],
       "createdAt": 1781274423441,
-      "updatedAt": 1781274460470
+      "updatedAt": 1781277935760
     },
     {
       "id": "15",
@@ -254,7 +254,7 @@
       "id": "18",
       "subject": "Story G-1: Fast Feedback on Small Changes",
       "description": "Commits with <10 files complete within 300ms. Fast path for simple changes without LLM analysis.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story G-1",
       "metadata": {},
       "blocks": [],
@@ -262,7 +262,7 @@
         "1"
       ],
       "createdAt": 1781274423444,
-      "updatedAt": 1781277770949
+      "updatedAt": 1781277935759
     },
     {
       "id": "19",
