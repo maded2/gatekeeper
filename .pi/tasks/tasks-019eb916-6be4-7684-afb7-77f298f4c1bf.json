@@ -85,7 +85,7 @@
       "id": "6",
       "subject": "Story C-2: Check Quality of Specific Commit Range",
       "description": "Implement `gatekeeper commit-range --range=HEAD~3..HEAD`. Only changes in specified commits are analyzed. Findings are attributable to specific commits.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story C-2",
       "metadata": {},
       "blocks": [],
@@ -93,7 +93,7 @@
         "1"
       ],
       "createdAt": 1781274423436,
-      "updatedAt": 1781277093332
+      "updatedAt": 1781277438240
     },
     {
       "id": "7",
@@ -282,13 +282,13 @@
       "id": "20",
       "subject": "Story G-3: Clear Error Messages",
       "description": "Clear, actionable error messages for: missing config, invalid JSON, unreachable LLM, missing API key, unreadable path. All use exit code 1.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story G-3",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423446,
-      "updatedAt": 1781274423446
+      "updatedAt": 1781277438242
     }
   ]
 }

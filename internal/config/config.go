@@ -144,5 +144,11 @@ func Validate(cfg *GatekeeperConfig) error {
 		return fmt.Errorf("target_threshold must be between 0 and 100, got %f", cfg.Gatekeeper.TargetThreshold)
 	}
 
+	if cfg.Gatekeeper.LLM != nil && cfg.Gatekeeper.LLM.APIKeyEnvVar != "" {
+		if os.Getenv(cfg.Gatekeeper.LLM.APIKeyEnvVar) == "" {
+			return fmt.Errorf("environment variable %s is not set; required for LLM authentication", cfg.Gatekeeper.LLM.APIKeyEnvVar)
+		}
+	}
+
 	return nil
 }
