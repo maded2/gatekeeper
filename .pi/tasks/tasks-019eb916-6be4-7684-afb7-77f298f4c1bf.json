@@ -169,25 +169,25 @@
       "id": "12",
       "subject": "Story E-1: Evaluate Code Readability and Intent",
       "description": "Flag variables/functions with names that obscure purpose. Each flag includes suggested improvement. Evaluation considers surrounding context.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story E-1",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423440,
-      "updatedAt": 1781278728039
+      "updatedAt": 1781278790121
     },
     {
       "id": "13",
       "subject": "Story E-2: Detect Code Duplication and DRY Violations",
       "description": "Identify blocks of logically identical or near-identical code across files. Show both locations and recommendation for extraction.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story E-2",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423441,
-      "updatedAt": 1781274423441
+      "updatedAt": 1781278790122
     },
     {
       "id": "14",
