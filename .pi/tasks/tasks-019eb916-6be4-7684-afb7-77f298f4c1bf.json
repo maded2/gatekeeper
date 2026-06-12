@@ -71,7 +71,7 @@
       "id": "5",
       "subject": "Story C-1: Check Quality of Changes Between Two Branches",
       "description": "Implement `gatekeeper diff --base=main --target=feature` using go-git. Only changed files/lines are analyzed. Output shows per-pillar impact of changes.",
-      "status": "pending",
+      "status": "in_progress",
       "activeForm": "Implementing Story C-1",
       "metadata": {},
       "blocks": [],
@@ -79,7 +79,7 @@
         "1"
       ],
       "createdAt": 1781274423435,
-      "updatedAt": 1781274460462
+      "updatedAt": 1781276457441
     },
     {
       "id": "6",
@@ -157,13 +157,13 @@
       "id": "11",
       "subject": "Story D-4: Enforce Mutation Testing Coverage Requirements",
       "description": "Configure minimum mutation coverage threshold (default 80%). Below threshold → Verification pillar reduced by 20%. Output explains penalty.",
-      "status": "in_progress",
+      "status": "completed",
       "activeForm": "Implementing Story D-4",
       "metadata": {},
       "blocks": [],
       "blockedBy": [],
       "createdAt": 1781274423439,
-      "updatedAt": 1781276182914
+      "updatedAt": 1781276457439
     },
     {
       "id": "12",
