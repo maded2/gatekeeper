@@ -3,7 +3,7 @@ gatekeeper-test-bin
 gatekeeper
 
 # Task tracking
-.pi/tasks/
+.pi/
 
 # IDE
 .idea/

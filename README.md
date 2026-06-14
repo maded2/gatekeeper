@@ -1,7 +1,7 @@
 # Gatekeeper — Automated Quality Score Tool
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org/doc/devel/release.html)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 **Gatekeeper** is a single-binary CLI tool that evaluates git commits, pull requests, or full codebases against an organizational Quality Score Standard. It combines static analysis, structural code metrics, and LLM-driven reasoning to produce a score out of 100 with actionable remediations.
 
@@ -256,4 +256,4 @@ go build -o gatekeeper .
 
 ## License
 
-[MIT License](LICENSE)
+[Apache License 2.0](LICENSE)
