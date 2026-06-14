@@ -74,6 +74,12 @@ var checkCmd = &cobra.Command{
 					return nil
 				}
 			}
+		case "markdown":
+			r := reporter.NewMarkdown(os.Stdout)
+			if err := r.Print(result); err != nil {
+				printError(fmt.Sprintf("Error formatting markdown: %v", err))
+				return nil
+			}
 		default:
 			r := reporter.NewPretty(os.Stdout)
 			if err := r.Print(result); err != nil {
