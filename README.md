@@ -30,6 +30,11 @@
   - Dynamic Verification (35 pts): Farley Index, mutation testing
   - Security & Supply Chain (20 pts): SAST, SCA, secret detection
 
+- **Flexible Authentication**
+  - API key authentication via environment variables
+  - Browser-based OAuth2 login for Google Gemini and other providers
+  - Token caching and automatic refresh
+
 - **Privacy-First Design**
   - Secret redaction before any network transmission
   - Air-gapped mode with rule-based fallback
@@ -114,6 +119,8 @@ gatekeeper commit-range --range=abc123..def456 --format=markdown
 
 Gatekeeper uses a `gatekeeper.json` file in the project root. Run `gatekeeper init` to create a default configuration.
 
+### API Key Authentication (Default)
+
 ```json
 {
   "gatekeeper": {
@@ -123,6 +130,7 @@ Gatekeeper uses a `gatekeeper.json` file in the project root. Run `gatekeeper in
       "provider": "openai-compatible",
       "base_url": "https://api.openai.com/v1",
       "model_name": "gpt-4o-mini",
+      "auth_type": "api_key",
       "api_key_env_var": "GATEKEEPER_API_KEY",
       "timeout_ms": 4000,
       "temperature": 0.0
@@ -152,17 +160,60 @@ Gatekeeper uses a `gatekeeper.json` file in the project root. Run `gatekeeper in
 }
 ```
 
+### Browser OAuth Authentication (Google Gemini)
+
+For providers that support OAuth2 (such as Google Gemini), use browser-based login. Gatekeeper opens your browser for authentication and caches the resulting token.
+
+```json
+{
+  "gatekeeper": {
+    "target_threshold": 75.0,
+    "llm": {
+      "base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "model_name": "gemini-pro",
+      "auth_type": "oauth_browser",
+      "oauth_token_url": "https://oauth2.googleapis.com/token",
+      "oauth_auth_url": "https://accounts.google.com/o/oauth2/v2/auth",
+      "oauth_client_id_env_var": "GOOGLE_CLIENT_ID",
+      "oauth_client_secret_env_var": "GOOGLE_CLIENT_SECRET",
+      "oauth_scopes": ["https://www.googleapis.com/auth/cloud-platform"],
+      "oauth_redirect_url": "http://localhost:8080/callback",
+      "oauth_token_cache_file": "~/.cache/gatekeeper/oauth_token.json",
+      "timeout_ms": 5000,
+      "temperature": 0.0
+    }
+  }
+}
+```
+
+The OAuth flow works as follows:
+1. Gatekeeper opens your default browser to the provider's consent page
+2. You sign in and grant permissions in the browser
+3. The provider redirects to a local callback server (`localhost:8080/callback`)
+4. Gatekeeper exchanges the authorization code for an access token
+5. The token is cached to disk and automatically refreshed when it expires
+
+Styled HTML pages are served locally during the flow: a waiting page while you authenticate, a success confirmation after sign-in, and an error page if authentication fails.
+
 ### Configuration Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `target_threshold` | float | 75.0 | Minimum score to pass (0-100) |
 | `fail_on_critical_security` | bool | true | Block on critical/high security findings |
+| `llm.auth_type` | string | `api_key` | Authentication method: `api_key` or `oauth_browser` |
 | `llm.base_url` | string | - | LLM provider endpoint |
 | `llm.model_name` | string | - | Model identifier |
-| `llm.api_key_env_var` | string | - | Environment variable for API key |
+| `llm.api_key_env_var` | string | - | Environment variable for API key (api_key auth) |
 | `llm.timeout_ms` | int | 4000 | Request timeout in milliseconds |
 | `llm.temperature` | float | 0.0 | Model temperature (0 = deterministic) |
+| `llm.oauth_token_url` | string | - | OAuth2 token endpoint (oauth_browser auth) |
+| `llm.oauth_auth_url` | string | - | OAuth2 authorization endpoint (oauth_browser auth) |
+| `llm.oauth_client_id_env_var` | string | - | Env var for OAuth client ID |
+| `llm.oauth_client_secret_env_var` | string | - | Env var for OAuth client secret |
+| `llm.oauth_scopes` | []string | - | OAuth2 scopes to request |
+| `llm.oauth_redirect_url` | string | - | Local callback URL (e.g., `http://localhost:8080/callback`) |
+| `llm.oauth_token_cache_file` | string | - | Path to cache OAuth tokens (supports `~` expansion) |
 | `privacy.allow_public_cloud_transmission` | bool | false | Allow public cloud endpoints |
 | `privacy.data_scrubbing` | bool | true | Redact secrets before transmission |
 | `exclusions.paths` | []string | see above | Glob patterns to exclude |
