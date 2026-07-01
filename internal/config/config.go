@@ -22,14 +22,33 @@ type GatekeeperSection struct {
 	Privacy               *PrivacyConfig `json:"privacy,omitempty"`
 }
 
+// AuthType represents the authentication method for LLM requests.
+type AuthType string
+
+const (
+	// AuthAPIKey uses a static API key from an environment variable.
+	AuthAPIKey AuthType = "api_key"
+	// AuthOAuthBrowser uses OAuth2 authorization code grant with browser redirect.
+	AuthOAuthBrowser AuthType = "oauth_browser"
+)
+
 // LLMConfig holds LLM provider settings.
 type LLMConfig struct {
-	Provider      string  `json:"provider,omitempty"`
-	BaseURL       string  `json:"base_url,omitempty"`
-	ModelName     string  `json:"model_name,omitempty"`
-	APIKeyEnvVar  string  `json:"api_key_env_var,omitempty"`
-	TimeoutMS     int     `json:"timeout_ms,omitempty"`
-	Temperature   float64 `json:"temperature,omitempty"`
+	Provider      string   `json:"provider,omitempty"`
+	BaseURL       string   `json:"base_url,omitempty"`
+	ModelName     string   `json:"model_name,omitempty"`
+	AuthType      AuthType `json:"auth_type,omitempty"`
+	APIKeyEnvVar  string   `json:"api_key_env_var,omitempty"`
+	TimeoutMS     int      `json:"timeout_ms,omitempty"`
+	Temperature   float64  `json:"temperature,omitempty"`
+	// OAuth browser fields (used when auth_type is "oauth_browser")
+	OAuthTokenURL        string   `json:"oauth_token_url,omitempty"`
+	OAuthAuthURL         string   `json:"oauth_auth_url,omitempty"`
+	OAuthClientIDEnvVar  string   `json:"oauth_client_id_env_var,omitempty"`
+	OAuthClientSecretEnvVar string `json:"oauth_client_secret_env_var,omitempty"`
+	OAuthScopes          []string `json:"oauth_scopes,omitempty"`
+	OAuthRedirectURL     string   `json:"oauth_redirect_url,omitempty"`
+	OAuthTokenCacheFile  string   `json:"oauth_token_cache_file,omitempty"`
 }
 
 // PrivacyConfig holds privacy / air-gapped settings.
@@ -144,10 +163,49 @@ func Validate(cfg *GatekeeperConfig) error {
 		return fmt.Errorf("target_threshold must be between 0 and 100, got %f", cfg.Gatekeeper.TargetThreshold)
 	}
 
-	if cfg.Gatekeeper.LLM != nil && cfg.Gatekeeper.LLM.APIKeyEnvVar != "" {
-		if os.Getenv(cfg.Gatekeeper.LLM.APIKeyEnvVar) == "" {
-			return fmt.Errorf("environment variable %s is not set; required for LLM authentication", cfg.Gatekeeper.LLM.APIKeyEnvVar)
+	if cfg.Gatekeeper.LLM == nil {
+		return nil
+	}
+
+	llmCfg := cfg.Gatekeeper.LLM
+
+	// Determine auth type (default to api_key for backward compatibility)
+	authType := llmCfg.AuthType
+	if authType == "" {
+		authType = AuthAPIKey
+	}
+
+	switch authType {
+	case AuthAPIKey:
+		if llmCfg.APIKeyEnvVar != "" {
+			if os.Getenv(llmCfg.APIKeyEnvVar) == "" {
+				return fmt.Errorf("environment variable %s is not set; required for LLM authentication", llmCfg.APIKeyEnvVar)
+			}
 		}
+	case AuthOAuthBrowser:
+		if llmCfg.OAuthTokenURL == "" {
+			return errors.New("oauth_token_url is required when auth_type is 'oauth_browser'")
+		}
+		if llmCfg.OAuthAuthURL == "" {
+			return errors.New("oauth_auth_url is required when auth_type is 'oauth_browser'")
+		}
+		if llmCfg.OAuthClientIDEnvVar == "" {
+			return errors.New("oauth_client_id_env_var is required when auth_type is 'oauth_browser'")
+		}
+		if llmCfg.OAuthClientSecretEnvVar == "" {
+			return errors.New("oauth_client_secret_env_var is required when auth_type is 'oauth_browser'")
+		}
+		if llmCfg.OAuthRedirectURL == "" {
+			return errors.New("oauth_redirect_url is required when auth_type is 'oauth_browser'")
+		}
+		if os.Getenv(llmCfg.OAuthClientIDEnvVar) == "" {
+			return fmt.Errorf("environment variable %s is not set; required for OAuth client ID", llmCfg.OAuthClientIDEnvVar)
+		}
+		if os.Getenv(llmCfg.OAuthClientSecretEnvVar) == "" {
+			return fmt.Errorf("environment variable %s is not set; required for OAuth client secret", llmCfg.OAuthClientSecretEnvVar)
+		}
+	default:
+		return fmt.Errorf("unsupported auth_type: %q; must be 'api_key' or 'oauth_browser'", authType)
 	}
 
 	return nil
