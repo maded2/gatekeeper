@@ -414,7 +414,12 @@ func (m *BrowserOAuthManager) loadToken() error {
 		return nil
 	}
 
-	data, err := os.ReadFile(m.config.TokenCacheFile)
+	cacheFile, err := expandPath(m.config.TokenCacheFile)
+	if err != nil {
+		return fmt.Errorf("expand token cache path: %w", err)
+	}
+
+	data, err := os.ReadFile(cacheFile)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil
@@ -447,8 +452,13 @@ func (m *BrowserOAuthManager) saveToken() {
 		return
 	}
 
+	cacheFile, err := expandPath(m.config.TokenCacheFile)
+	if err != nil {
+		return
+	}
+
 	// Ensure directory exists
-	dir := filepath.Dir(m.config.TokenCacheFile)
+	dir := filepath.Dir(cacheFile)
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return
 	}
@@ -458,7 +468,7 @@ func (m *BrowserOAuthManager) saveToken() {
 		return
 	}
 
-	if err := os.WriteFile(m.config.TokenCacheFile, data, 0600); err != nil {
+	if err := os.WriteFile(cacheFile, data, 0600); err != nil {
 		// Non-fatal: token caching is best-effort
 	}
 }
@@ -468,6 +478,18 @@ func generateState() string {
 	b := make([]byte, 16)
 	_, _ = rand.Read(b)
 	return fmt.Sprintf("%x", b)
+}
+
+// expandPath expands a ~ to the user's home directory.
+func expandPath(path string) (string, error) {
+	if strings.HasPrefix(path, "~/") || path == "~" {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return "", fmt.Errorf("get home directory: %w", err)
+		}
+		return filepath.Join(home, path[2:]), nil
+	}
+	return path, nil
 }
 
 // openBrowser opens the default browser to the given URL.

@@ -203,6 +203,48 @@ func TestTokenPersistence_ExpiresAtPreserved(t *testing.T) {
 	}
 }
 
+func TestTokenPersistence_HomeDirExpansion(t *testing.T) {
+	// Use a path that starts with ~ to test expansion
+	home, err := os.UserHomeDir()
+	if err != nil {
+		t.Skip("home directory not available")
+	}
+
+	tokenFile := filepath.Join(home, ".cache", "gatekeeper", "test_token.json")
+
+	// Clean up after test
+	defer func() {
+		os.Remove(tokenFile)
+		os.Remove(filepath.Dir(tokenFile))
+	}()
+
+	validToken := llm.OAuthToken{
+		AccessToken: "home-dir-token",
+		TokenType:   "Bearer",
+		ExpiresIn:   3600,
+	}
+	data, _ := json.Marshal(validToken)
+	os.MkdirAll(filepath.Dir(tokenFile), 0700)
+	os.WriteFile(tokenFile, data, 0600)
+
+	// Use ~ expansion in the path
+	expandedPath := "~/.cache/gatekeeper/test_token.json"
+	manager := llm.NewBrowserOAuthManager(llm.OAuthConfig{
+		TokenCacheFile: expandedPath,
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	accessToken, err := manager.GetToken(ctx)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if accessToken != "home-dir-token" {
+		t.Errorf("expected home-dir-token, got %s", accessToken)
+	}
+}
+
 func TestTokenRefresh_WithRefreshToken(t *testing.T) {
 	dir := t.TempDir()
 	tokenFile := filepath.Join(dir, "token.json")

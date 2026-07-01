@@ -195,6 +195,8 @@ The OAuth flow works as follows:
 
 Styled HTML pages are served locally during the flow: a waiting page while you authenticate, a success confirmation after sign-in, and an error page if authentication fails.
 
+**Token caching:** Tokens are persisted to the path specified by `oauth_token_cache_file`. On subsequent runs, Gatekeeper loads the cached token and refreshes it transparently if it has expired. If refresh fails (e.g., revoked consent), the browser flow is retried automatically.
+
 ### Configuration Options
 
 | Option | Type | Default | Description |
