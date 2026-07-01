@@ -9,6 +9,7 @@
 
 - [Features](#features)
 - [Installation](#installation)
+- [Build](#build)
 - [Quick Start](#quick-start)
 - [Commands](#commands)
 - [Configuration](#configuration)
@@ -52,8 +53,27 @@
 ```bash
 git clone https://github.com/yourorg/gatekeeper.git
 cd gatekeeper
-go build -o gatekeeper .
+make build
 ```
+
+This produces a statically linked binary in `dist/` for your current platform.
+
+### Cross-Platform Builds
+
+```bash
+# Build for all platforms (Linux, macOS, Windows)
+make release
+
+# Build for a specific platform
+make linux    # linux-amd64, linux-arm64
+make macos    # darwin-amd64, darwin-arm64
+make windows  # windows-amd64.exe
+
+# Clean build artifacts
+make clean
+```
+
+All binaries are statically linked, stripped, and embed version metadata.
 
 ### Binary Release
 
@@ -284,7 +304,7 @@ gatekeeper/
 
 ```bash
 # Run all tests
-go test ./...
+make test
 
 # Run with verbose output
 go test ./... -v
@@ -292,11 +312,14 @@ go test ./... -v
 # Run integration tests
 go test ./tests/integration/ -v
 
-# Build the binary
-go build -o gatekeeper .
+# Build for current platform
+make build
+
+# Build for all platforms
+make release
 
 # Run the binary
-./gatekeeper check
+./dist/gatekeeper-linux-amd64 check
 ```
 
 ### Code Style
