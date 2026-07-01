@@ -2,6 +2,9 @@
 gatekeeper-test-bin
 gatekeeper
 
+# Build output
+dist/
+
 # Task tracking
 .pi/
 
