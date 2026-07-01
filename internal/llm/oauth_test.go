@@ -170,6 +170,39 @@ func TestTokenPersistence_SaveAndLoad(t *testing.T) {
 	}
 }
 
+func TestTokenPersistence_ExpiresAtPreserved(t *testing.T) {
+	dir := t.TempDir()
+	tokenFile := filepath.Join(dir, "token.json")
+
+	// Token with a future expiry time stored as RFC3339
+	futureExpiry := time.Now().Add(1 * time.Hour).Format(time.RFC3339)
+	token := llm.OAuthToken{
+		AccessToken:  "test-token",
+		TokenType:    "Bearer",
+		ExpiresIn:    3600,
+		RefreshToken: "test-refresh",
+		ExpiresAt:    futureExpiry,
+	}
+
+	data, _ := json.Marshal(token)
+	os.WriteFile(tokenFile, data, 0600)
+
+	manager := llm.NewBrowserOAuthManager(llm.OAuthConfig{
+		TokenCacheFile: tokenFile,
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	accessToken, err := manager.GetToken(ctx)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if accessToken != "test-token" {
+		t.Errorf("expected test-token, got %s", accessToken)
+	}
+}
+
 func TestTokenRefresh_WithRefreshToken(t *testing.T) {
 	dir := t.TempDir()
 	tokenFile := filepath.Join(dir, "token.json")
@@ -359,9 +392,32 @@ func TestGetAPIKey_OAuthBrowser(t *testing.T) {
 	data, _ := json.Marshal(validToken)
 	os.WriteFile(tokenFile, data, 0600)
 
-	cfg := &llm.Config{
-		AuthType: config.AuthOAuthBrowser,
+	os.Setenv("TEST_OAUTH_CLIENT_ID", "test-client-id")
+	os.Setenv("TEST_OAUTH_CLIENT_SECRET", "test-client-secret")
+	defer os.Unsetenv("TEST_OAUTH_CLIENT_ID")
+	defer os.Unsetenv("TEST_OAUTH_CLIENT_SECRET")
+
+	cfg := config.DefaultConfig()
+	cfg.Gatekeeper.LLM = &config.LLMConfig{
+		AuthType:              config.AuthOAuthBrowser,
+		OAuthTokenURL:         "https://oauth2.googleapis.com/token",
+		OAuthAuthURL:          "https://accounts.google.com/o/oauth2/v2/auth",
+		OAuthClientIDEnvVar:   "TEST_OAUTH_CLIENT_ID",
+		OAuthClientSecretEnvVar: "TEST_OAUTH_CLIENT_SECRET",
+		OAuthRedirectURL:      "http://localhost:8080/callback",
+		OAuthTokenCacheFile:   tokenFile,
 	}
-	// Note: oauthManager is not exported, so we test through FromConfig
-	_ = cfg
+
+	llmCfg, err := llm.FromConfig(cfg)
+	if err != nil {
+		t.Fatalf("FromConfig returned error: %v", err)
+	}
+
+	key, err := llmCfg.GetAPIKey(context.Background())
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if key != "cached-token" {
+		t.Errorf("expected cached-token, got %s", key)
+	}
 }

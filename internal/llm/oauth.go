@@ -34,6 +34,7 @@ type OAuthToken struct {
 	TokenType    string `json:"token_type"`
 	ExpiresIn    int64  `json:"expires_in"`
 	RefreshToken string `json:"refresh_token,omitempty"`
+	ExpiresAt    string `json:"expires_at,omitempty"`
 	expiresAt    time.Time
 }
 
@@ -262,6 +263,9 @@ func (m *BrowserOAuthManager) browserAuth(ctx context.Context) (*OAuthToken, err
 		addr = actualAddr
 	}
 
+	// Rebuild auth URL with the correct redirect URL (after port resolution)
+	authURL = m.buildAuthURL(state)
+
 	// Print instructions
 	fmt.Printf("Opening browser for sign-in...\n")
 	fmt.Printf("If the browser does not open, visit:\n%s\n", authURL)
@@ -335,12 +339,14 @@ func (m *BrowserOAuthManager) exchangeCode(ctx context.Context, code string) (*O
 		expiresIn = 3600
 	}
 
+	exp := time.Now().Add(time.Duration(expiresIn) * time.Second)
 	return &OAuthToken{
 		AccessToken:  tokenResp.AccessToken,
 		TokenType:    tokenResp.TokenType,
 		ExpiresIn:    expiresIn,
 		RefreshToken: tokenResp.RefreshToken,
-		expiresAt:    time.Now().Add(time.Duration(expiresIn) * time.Second),
+		ExpiresAt:    exp.Format(time.RFC3339),
+		expiresAt:    exp,
 	}, nil
 }
 
@@ -391,12 +397,14 @@ func (m *BrowserOAuthManager) refreshToken(ctx context.Context) (*OAuthToken, er
 		refreshToken = m.token.RefreshToken
 	}
 
+	exp := time.Now().Add(time.Duration(expiresIn) * time.Second)
 	return &OAuthToken{
 		AccessToken:  tokenResp.AccessToken,
 		TokenType:    tokenResp.TokenType,
 		ExpiresIn:    expiresIn,
 		RefreshToken: refreshToken,
-		expiresAt:    time.Now().Add(time.Duration(expiresIn) * time.Second),
+		ExpiresAt:    exp.Format(time.RFC3339),
+		expiresAt:    exp,
 	}, nil
 }
 
@@ -419,8 +427,13 @@ func (m *BrowserOAuthManager) loadToken() error {
 		return fmt.Errorf("parse token cache: %w", err)
 	}
 
-	// Restore expiry time
-	if token.ExpiresIn > 0 {
+	// Restore expiry time from stored timestamp, falling back to ExpiresIn
+	if token.ExpiresAt != "" {
+		if parsed, err := time.Parse(time.RFC3339, token.ExpiresAt); err == nil {
+			token.expiresAt = parsed
+		}
+	}
+	if token.expiresAt.IsZero() && token.ExpiresIn > 0 {
 		token.expiresAt = time.Now().Add(time.Duration(token.ExpiresIn) * time.Second)
 	}
 
