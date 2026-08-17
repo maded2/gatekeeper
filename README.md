@@ -31,6 +31,11 @@
   - Dynamic Verification (35 pts): Farley Index, mutation testing
   - Security & Supply Chain (20 pts): SAST, SCA, secret detection
 
+- **LLM-Enhanced Evaluation**
+  - Configured LLM providers review changed code and apply pillar adjustments plus actionable remediations to the score
+  - Graceful rule-based fallback when the LLM is unavailable — a down LLM never changes an exit code
+  - Works with any OpenAI-compatible endpoint (OpenAI, Google Gemini, Ollama, vLLM, …)
+
 - **Flexible Authentication**
   - API key authentication via environment variables
   - Browser-based OAuth2 login for Google Gemini and other providers
@@ -184,13 +189,15 @@ Gatekeeper uses a `gatekeeper.json` file in the project root. Run `gatekeeper in
 
 For providers that support OAuth2 (such as Google Gemini), use browser-based login. Gatekeeper opens your browser for authentication and caches the resulting token.
 
+Note: Gatekeeper speaks the OpenAI-compatible wire protocol, so point `base_url` at the provider's **OpenAI-compatible** endpoint — for Gemini that is `https://generativelanguage.googleapis.com/v1beta/openai`, not the native `/v1beta` API.
+
 ```json
 {
   "gatekeeper": {
     "target_threshold": 75.0,
     "llm": {
-      "base_url": "https://generativelanguage.googleapis.com/v1beta",
-      "model_name": "gemini-pro",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+      "model_name": "gemini-2.0-flash",
       "auth_type": "oauth_browser",
       "oauth_token_url": "https://oauth2.googleapis.com/token",
       "oauth_auth_url": "https://accounts.google.com/o/oauth2/v2/auth",
@@ -217,6 +224,10 @@ Styled HTML pages are served locally during the flow: a waiting page while you a
 
 **Token caching:** Tokens are persisted to the path specified by `oauth_token_cache_file`. On subsequent runs, Gatekeeper loads the cached token and refreshes it transparently if it has expired. If refresh fails (e.g., revoked consent), the browser flow is retried automatically.
 
+**Callback port:** The local callback server binds to the port in `oauth_redirect_url`. If that port is already in use you get a clear startup error — or set the redirect URL to `http://127.0.0.1:0/callback` to let Gatekeeper pick a free port (the printed sign-in URL always carries the actually-bound address). An invalid callback state or a cancelled consent screen fails fast with an error instead of hanging.
+
+**Note on Google:** This flow uses user-credential OAuth against Google's endpoints. Google officially documents API keys (and service accounts) for the Gemini API, so verify that your organization's OAuth client and scopes work with the OpenAI-compatible endpoint before relying on it in CI.
+
 ### Configuration Options
 
 | Option | Type | Default | Description |
@@ -224,7 +235,7 @@ Styled HTML pages are served locally during the flow: a waiting page while you a
 | `target_threshold` | float | 75.0 | Minimum score to pass (0-100) |
 | `fail_on_critical_security` | bool | true | Block on critical/high security findings |
 | `llm.auth_type` | string | `api_key` | Authentication method: `api_key` or `oauth_browser` |
-| `llm.base_url` | string | - | LLM provider endpoint |
+| `llm.base_url` | string | - | OpenAI-compatible endpoint root (requests go to `{base_url}/chat/completions`) |
 | `llm.model_name` | string | - | Model identifier |
 | `llm.api_key_env_var` | string | - | Environment variable for API key (api_key auth) |
 | `llm.timeout_ms` | int | 4000 | Request timeout in milliseconds |
@@ -239,6 +250,34 @@ Styled HTML pages are served locally during the flow: a waiting page while you a
 | `privacy.allow_public_cloud_transmission` | bool | false | Allow public cloud endpoints |
 | `privacy.data_scrubbing` | bool | true | Redact secrets before transmission |
 | `exclusions.paths` | []string | see above | Glob patterns to exclude |
+
+### How LLM Enhancement Works
+
+When an `llm` section is configured, Gatekeeper first computes the rule-based score, then sends the evaluated code (capped at 24 KB per run) to the provider:
+
+1. **Scrubbing** — secret patterns are redacted from the transmitted code when `privacy.data_scrubbing` is enabled (the default).
+2. **Air-gap check** — if `privacy.allow_public_cloud_transmission` is `false`, nothing is transmitted and the rule-based score stands.
+3. **Structured response** — the provider must return JSON with `pillar_adjustments` (deductions for static health and architecture) and `remediations` (priority, pillar, location, finding, actionable fix). Deductions are clamped at zero per pillar and remediations appear as findings in every output format.
+4. **Fallback** — on any failure (auth, network, timeout, malformed response) Gatekeeper retries twice, then reports the rule-based score unchanged. Exit codes are never affected by LLM availability.
+
+JSON output carries an `llm_enhanced` flag indicating whether the LLM contributed to the score:
+
+```json
+{
+  "total": 95.5,
+  "pillars": { "static": 16.5, "architecture": 24, "verification": 35, "security": 20 },
+  "findings": [
+    {
+      "priority": "MEDIUM",
+      "pillar": "static",
+      "location": "main.go:lines 4-8",
+      "description": "Function does too much",
+      "remediation": "Split into smaller helpers"
+    }
+  ],
+  "llm_enhanced": true
+}
+```
 
 ## Quality Score
 
@@ -282,7 +321,7 @@ gatekeeper/
 │   ├── config/             # Configuration loading, validation
 │   ├── evaluator/          # Quality scoring, pillar computation
 │   ├── git/                # Git diff/range extraction
-│   ├── llm/                # LLM config, secret scrubbing, retry logic
+│   ├── llm/                # LLM client (Eino), OAuth browser flow, scrubbing, retries
 │   ├── reporter/           # Output formatters (pretty, JSON, markdown)
 │   └── scanner/            # File discovery with glob exclusions
 ├── pkg/
