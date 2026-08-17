@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -46,10 +47,10 @@ func (t *OAuthToken) IsExpired() bool {
 
 // BrowserOAuthManager handles the browser-based OAuth2 authorization code flow.
 type BrowserOAuthManager struct {
-	mu       sync.Mutex
-	token    *OAuthToken
-	config   OAuthConfig
-	client   *http.Client
+	mu     sync.Mutex
+	token  *OAuthToken
+	config OAuthConfig
+	client *http.Client
 }
 
 // NewBrowserOAuthManager creates a new BrowserOAuthManager with the given OAuth configuration.
@@ -107,12 +108,12 @@ func (m *BrowserOAuthManager) GetToken(ctx context.Context) (string, error) {
 }
 
 // buildAuthURL constructs the OAuth2 authorization URL with state parameter.
-func (m *BrowserOAuthManager) buildAuthURL(state string) string {
+func (m *BrowserOAuthManager) buildAuthURL(state, redirectURI string) string {
 	u, _ := url.Parse(m.config.AuthURL)
 	q := u.Query()
 	q.Set("response_type", "code")
 	q.Set("client_id", m.config.ClientID)
-	q.Set("redirect_uri", m.config.RedirectURL)
+	q.Set("redirect_uri", redirectURI)
 	q.Set("scope", strings.Join(m.config.Scopes, " "))
 	q.Set("state", state)
 	q.Set("access_type", "offline")
@@ -123,9 +124,9 @@ func (m *BrowserOAuthManager) buildAuthURL(state string) string {
 
 // oauthServer wraps an HTTP server for the browser login callback flow.
 type oauthServer struct {
-	server  *http.Server
-	state   string
-	done    chan string
+	server *http.Server
+	state  string
+	done   chan string
 }
 
 // waitingPage is the HTML shown while the user completes login in their browser.
@@ -164,18 +165,26 @@ func newOAuthServer(state string) *oauthServer {
 	}
 }
 
-// Start launches the HTTP server on the given address.
-func (s *oauthServer) Start(addr string) error {
+// Start launches the HTTP server on the given address and returns the
+// actually-bound address (which differs from addr when a dynamic port is
+// requested). It does not block; serving happens in the background.
+func (s *oauthServer) Start(addr string) (string, error) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", s.Handle)
 	mux.HandleFunc("/callback", s.Handle)
+
+	listener, err := net.Listen("tcp", addr)
+	if err != nil {
+		return "", err
+	}
+
 	s.server = &http.Server{
-		Addr:         addr,
 		Handler:      mux,
 		ReadTimeout:  30 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
-	return s.server.ListenAndServe()
+	go s.server.Serve(listener)
+	return listener.Addr().String(), nil
 }
 
 // Handle processes incoming HTTP requests for the browser login flow.
@@ -195,17 +204,17 @@ func (s *oauthServer) handleCallback(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	code := q.Get("code")
 	state := q.Get("state")
-	error_ := q.Get("error")
+	oauthErr := q.Get("error")
 
-	if error_ != "" {
+	if oauthErr != "" {
 		msg := q.Get("error_description")
 		if msg == "" {
-			msg = error_
+			msg = oauthErr
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(errorPage(msg)))
-		s.done <- ""
+		s.signal("")
 		return
 	}
 
@@ -213,13 +222,22 @@ func (s *oauthServer) handleCallback(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(errorPage("Invalid or missing authorization code.")))
+		s.signal("")
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(successPage))
-	s.done <- code
+	s.signal(code)
+}
+
+// signal delivers the callback result without blocking if it was already consumed.
+func (s *oauthServer) signal(code string) {
+	select {
+	case s.done <- code:
+	default:
+	}
 }
 
 // Stop gracefully shuts down the HTTP server.
@@ -235,9 +253,6 @@ func (m *BrowserOAuthManager) browserAuth(ctx context.Context) (*OAuthToken, err
 	// Generate a random state parameter
 	state := generateState()
 
-	// Build the authorization URL
-	authURL := m.buildAuthURL(state)
-
 	// Extract address from redirect URL
 	u, err := url.Parse(m.config.RedirectURL)
 	if err != nil {
@@ -249,34 +264,30 @@ func (m *BrowserOAuthManager) browserAuth(ctx context.Context) (*OAuthToken, err
 		addr = "127.0.0.1:0"
 	}
 
-	// Create and start the browser login server
+	// Create and start the browser login server (non-blocking)
 	server := newOAuthServer(state)
-	if err := server.Start(addr); err != nil {
+	boundAddr, err := server.Start(addr)
+	if err != nil {
 		return nil, fmt.Errorf("start browser login server: %w", err)
 	}
 
-	// Update redirect URL with actual port if dynamic
-	if u.Port() == "0" && server.server != nil {
-		actualAddr := server.server.Addr
-		u.Host = actualAddr
-		m.config.RedirectURL = u.String()
-		addr = actualAddr
-	}
+	// Resolve the redirect URL against the actually-bound address (dynamic port support)
+	u.Host = boundAddr
+	resolvedRedirect := u.String()
 
-	// Rebuild auth URL with the correct redirect URL (after port resolution)
-	authURL = m.buildAuthURL(state)
+	// Build the authorization URL with the resolved redirect URL
+	authURL := m.buildAuthURL(state, resolvedRedirect)
 
-	// Print instructions
+	// Open the browser and print instructions
 	fmt.Printf("Opening browser for sign-in...\n")
-	fmt.Printf("If the browser does not open, visit:\n%s\n", authURL)
-
-	// Open the browser
 	if err := openBrowser(authURL); err != nil {
 		fmt.Printf("Could not open browser. Please visit:\n%s\n", authURL)
+	} else {
+		fmt.Printf("If the browser does not open, visit:\n%s\n", authURL)
 	}
 
 	// Show local server status
-	fmt.Printf("Local server running at http://%s — awaiting sign-in...\n", addr)
+	fmt.Printf("Local server running at http://%s — awaiting sign-in...\n", boundAddr)
 
 	// Wait for the callback
 	select {
@@ -289,7 +300,7 @@ func (m *BrowserOAuthManager) browserAuth(ctx context.Context) (*OAuthToken, err
 			return nil, fmt.Errorf("sign-in was cancelled or failed")
 		}
 		// Exchange the code for a token
-		token, err := m.exchangeCode(ctx, code)
+		token, err := m.exchangeCode(ctx, code, resolvedRedirect)
 		if err != nil {
 			return nil, fmt.Errorf("exchange authorization code: %w", err)
 		}
@@ -298,13 +309,13 @@ func (m *BrowserOAuthManager) browserAuth(ctx context.Context) (*OAuthToken, err
 }
 
 // exchangeCode exchanges an authorization code for an access token.
-func (m *BrowserOAuthManager) exchangeCode(ctx context.Context, code string) (*OAuthToken, error) {
+func (m *BrowserOAuthManager) exchangeCode(ctx context.Context, code, redirectURI string) (*OAuthToken, error) {
 	form := url.Values{}
 	form.Set("grant_type", "authorization_code")
 	form.Set("code", code)
 	form.Set("client_id", m.config.ClientID)
 	form.Set("client_secret", m.config.ClientSecret)
-	form.Set("redirect_uri", m.config.RedirectURL)
+	form.Set("redirect_uri", redirectURI)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, m.config.TokenURL, strings.NewReader(form.Encode()))
 	if err != nil {

@@ -25,11 +25,11 @@ func TestOAuthBrowserConfig_RequiresAuthURL(t *testing.T) {
 
 	cfg := config.DefaultConfig()
 	cfg.Gatekeeper.LLM = &config.LLMConfig{
-		AuthType:               config.AuthOAuthBrowser,
-		OAuthTokenURL:          "https://oauth2.googleapis.com/token",
-		OAuthClientIDEnvVar:    "TEST_OAUTH_CLIENT_ID",
+		AuthType:                config.AuthOAuthBrowser,
+		OAuthTokenURL:           "https://oauth2.googleapis.com/token",
+		OAuthClientIDEnvVar:     "TEST_OAUTH_CLIENT_ID",
 		OAuthClientSecretEnvVar: "TEST_OAUTH_CLIENT_SECRET",
-		OAuthRedirectURL:       "http://localhost:8080/callback",
+		OAuthRedirectURL:        "http://localhost:8080/callback",
 	}
 
 	err := config.Validate(&cfg)
@@ -49,10 +49,10 @@ func TestOAuthBrowserConfig_RequiresRedirectURL(t *testing.T) {
 
 	cfg := config.DefaultConfig()
 	cfg.Gatekeeper.LLM = &config.LLMConfig{
-		AuthType:               config.AuthOAuthBrowser,
-		OAuthTokenURL:          "https://oauth2.googleapis.com/token",
-		OAuthAuthURL:           "https://accounts.google.com/o/oauth2/v2/auth",
-		OAuthClientIDEnvVar:    "TEST_OAUTH_CLIENT_ID",
+		AuthType:                config.AuthOAuthBrowser,
+		OAuthTokenURL:           "https://oauth2.googleapis.com/token",
+		OAuthAuthURL:            "https://accounts.google.com/o/oauth2/v2/auth",
+		OAuthClientIDEnvVar:     "TEST_OAUTH_CLIENT_ID",
 		OAuthClientSecretEnvVar: "TEST_OAUTH_CLIENT_SECRET",
 	}
 
@@ -73,14 +73,14 @@ func TestOAuthBrowserConfig_Valid(t *testing.T) {
 
 	cfg := config.DefaultConfig()
 	cfg.Gatekeeper.LLM = &config.LLMConfig{
-		AuthType:               config.AuthOAuthBrowser,
-		OAuthTokenURL:          "https://oauth2.googleapis.com/token",
-		OAuthAuthURL:           "https://accounts.google.com/o/oauth2/v2/auth",
-		OAuthClientIDEnvVar:    "TEST_OAUTH_CLIENT_ID",
+		AuthType:                config.AuthOAuthBrowser,
+		OAuthTokenURL:           "https://oauth2.googleapis.com/token",
+		OAuthAuthURL:            "https://accounts.google.com/o/oauth2/v2/auth",
+		OAuthClientIDEnvVar:     "TEST_OAUTH_CLIENT_ID",
 		OAuthClientSecretEnvVar: "TEST_OAUTH_CLIENT_SECRET",
-		OAuthScopes:            []string{"https://www.googleapis.com/auth/cloud-platform"},
-		OAuthRedirectURL:       "http://localhost:8080/callback",
-		OAuthTokenCacheFile:    "~/.cache/gatekeeper/oauth_token.json",
+		OAuthScopes:             []string{"https://www.googleapis.com/auth/cloud-platform"},
+		OAuthRedirectURL:        "http://localhost:8080/callback",
+		OAuthTokenCacheFile:     "~/.cache/gatekeeper/oauth_token.json",
 	}
 
 	err := config.Validate(&cfg)
@@ -95,18 +95,18 @@ func TestOAuthBrowserConfig_JSONRoundTrip(t *testing.T) {
 
 	cfg := config.DefaultConfig()
 	cfg.Gatekeeper.LLM = &config.LLMConfig{
-		BaseURL:               "https://generativelanguage.googleapis.com/v1beta",
-		ModelName:             "gemini-pro",
-		AuthType:              config.AuthOAuthBrowser,
-		OAuthTokenURL:         "https://oauth2.googleapis.com/token",
-		OAuthAuthURL:          "https://accounts.google.com/o/oauth2/v2/auth",
-		OAuthClientIDEnvVar:   "GOOGLE_CLIENT_ID",
+		BaseURL:                 "https://generativelanguage.googleapis.com/v1beta",
+		ModelName:               "gemini-pro",
+		AuthType:                config.AuthOAuthBrowser,
+		OAuthTokenURL:           "https://oauth2.googleapis.com/token",
+		OAuthAuthURL:            "https://accounts.google.com/o/oauth2/v2/auth",
+		OAuthClientIDEnvVar:     "GOOGLE_CLIENT_ID",
 		OAuthClientSecretEnvVar: "GOOGLE_CLIENT_SECRET",
-		OAuthScopes:           []string{"https://www.googleapis.com/auth/cloud-platform"},
-		OAuthRedirectURL:      "http://localhost:8080/callback",
-		OAuthTokenCacheFile:   "~/.cache/gatekeeper/oauth_token.json",
-		TimeoutMS:             5000,
-		Temperature:           0,
+		OAuthScopes:             []string{"https://www.googleapis.com/auth/cloud-platform"},
+		OAuthRedirectURL:        "http://localhost:8080/callback",
+		OAuthTokenCacheFile:     "~/.cache/gatekeeper/oauth_token.json",
+		TimeoutMS:               5000,
+		Temperature:             0,
 	}
 
 	err := config.Save(&cfg, path)
@@ -351,18 +351,18 @@ func TestFromConfig_OAuthBrowser(t *testing.T) {
 
 	cfg := config.DefaultConfig()
 	cfg.Gatekeeper.LLM = &config.LLMConfig{
-		BaseURL:               "https://generativelanguage.googleapis.com/v1beta",
-		ModelName:             "gemini-pro",
-		AuthType:              config.AuthOAuthBrowser,
-		OAuthTokenURL:         "https://oauth2.googleapis.com/token",
-		OAuthAuthURL:          "https://accounts.google.com/o/oauth2/v2/auth",
-		OAuthClientIDEnvVar:   "TEST_OAUTH_CLIENT_ID",
+		BaseURL:                 "https://generativelanguage.googleapis.com/v1beta",
+		ModelName:               "gemini-pro",
+		AuthType:                config.AuthOAuthBrowser,
+		OAuthTokenURL:           "https://oauth2.googleapis.com/token",
+		OAuthAuthURL:            "https://accounts.google.com/o/oauth2/v2/auth",
+		OAuthClientIDEnvVar:     "TEST_OAUTH_CLIENT_ID",
 		OAuthClientSecretEnvVar: "TEST_OAUTH_CLIENT_SECRET",
-		OAuthScopes:           []string{"https://www.googleapis.com/auth/cloud-platform"},
-		OAuthRedirectURL:      "http://localhost:8080/callback",
-		OAuthTokenCacheFile:   "~/.cache/gatekeeper/oauth_token.json",
-		TimeoutMS:             5000,
-		Temperature:           0,
+		OAuthScopes:             []string{"https://www.googleapis.com/auth/cloud-platform"},
+		OAuthRedirectURL:        "http://localhost:8080/callback",
+		OAuthTokenCacheFile:     "~/.cache/gatekeeper/oauth_token.json",
+		TimeoutMS:               5000,
+		Temperature:             0,
 	}
 
 	llmCfg, err := llm.FromConfig(cfg)
@@ -441,13 +441,13 @@ func TestGetAPIKey_OAuthBrowser(t *testing.T) {
 
 	cfg := config.DefaultConfig()
 	cfg.Gatekeeper.LLM = &config.LLMConfig{
-		AuthType:              config.AuthOAuthBrowser,
-		OAuthTokenURL:         "https://oauth2.googleapis.com/token",
-		OAuthAuthURL:          "https://accounts.google.com/o/oauth2/v2/auth",
-		OAuthClientIDEnvVar:   "TEST_OAUTH_CLIENT_ID",
+		AuthType:                config.AuthOAuthBrowser,
+		OAuthTokenURL:           "https://oauth2.googleapis.com/token",
+		OAuthAuthURL:            "https://accounts.google.com/o/oauth2/v2/auth",
+		OAuthClientIDEnvVar:     "TEST_OAUTH_CLIENT_ID",
 		OAuthClientSecretEnvVar: "TEST_OAUTH_CLIENT_SECRET",
-		OAuthRedirectURL:      "http://localhost:8080/callback",
-		OAuthTokenCacheFile:   tokenFile,
+		OAuthRedirectURL:        "http://localhost:8080/callback",
+		OAuthTokenCacheFile:     tokenFile,
 	}
 
 	llmCfg, err := llm.FromConfig(cfg)
