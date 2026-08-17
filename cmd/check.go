@@ -58,6 +58,9 @@ var checkCmd = &cobra.Command{
 		// Run workspace check
 		result := evaluator.CheckWorkspace(*cfg, target)
 
+		// Enhance with LLM when configured (no-op / rule-based fallback otherwise)
+		result = evaluator.EnhanceWorkspaceWithLLM(cmd.Context(), *cfg, result, target)
+
 		// Output results
 		switch checkFormat {
 		case "json":

@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	diffBase    string
-	diffTarget  string
-	diffFormat  string
-	diffOutput  string
+	diffBase   string
+	diffTarget string
+	diffFormat string
+	diffOutput string
 )
 
 // diffCmd evaluates quality changes between two branches.
@@ -69,6 +69,9 @@ var diffCmd = &cobra.Command{
 
 		// Evaluate changed files
 		result := evaluator.CheckDiff(*cfg, changed)
+
+		// Enhance with LLM when configured (no-op / rule-based fallback otherwise)
+		result = evaluator.EnhanceWithLLM(cmd.Context(), *cfg, result, changed)
 
 		// Output
 		switch diffFormat {

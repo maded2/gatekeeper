@@ -65,6 +65,9 @@ var commitRangeCmd = &cobra.Command{
 		// Evaluate
 		result := evaluator.CheckDiff(*cfg, changed)
 
+		// Enhance with LLM when configured (no-op / rule-based fallback otherwise)
+		result = evaluator.EnhanceWithLLM(cmd.Context(), *cfg, result, changed)
+
 		// Output
 		switch rangeFormat {
 		case "json":
